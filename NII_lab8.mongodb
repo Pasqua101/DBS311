@@ -1,0 +1,31 @@
+db.products.find();
+
+// db.products.drop();
+
+//Q1. Write a query to return name and price of each product in database
+db.products.find({},{name : 1, price : 1, monthly_price : 1, _id : 0});
+
+
+//Q2. Write a query to return name and price for products of type accessory
+db.products.find({type : "accessory"},{ name : 1, monthly_price : 1, price: 1, _id : 0});
+
+//Q3. Write a query to return name and price for products with proce between $13 and $19
+db.products.find({price : {$gte : 13, $lte : 19}},{name: 1, price: 1, _id: 0});
+
+//Q4. Write a query to return id, name, price and type for products that aren't accessory
+db.products.find({type : {$nin : ["accessory"]}},{_id : 1, name : 1, price : 1, monthly_price : 1, type : 1}); //ID is always returned, not necessary to use _id : 1
+//$ne is better since we can use it for 1 item, whereas $nin will use a bunch of ORs to check for more than 1, can make it inefficent
+db.products.find({type : {$ne : "accessory"}},{_id : 1, name : 1, price : 1, monthly_price : 1, type : 1}); //ID is always returned, not necessary to use _id : 1
+
+//Q5. Write a query to return id, name, price, and type for products with accessory or service
+db.products.find({$or : [{type : "accessory"}, 
+                    {type:"service"}]}, {_id : 1, name : 1, price : 1, type : 1});
+
+//Q6. Write a query to return id, name, price and type for products that do have the type key
+db.products.find({type : {$exists : true}}, {_id : 1, name : 1, price : 1, monthly_price : 1, type : 1}); //If we did $exists : false, it would return documents that do not have the key
+
+//Q7. Write a query to return id, name, price, and type for products that their type is both accessory and case
+db.products.find({$and : [{type : "case"}, 
+                    {type: "accessory"}]}, {_id : 1, name : 1, price : 1, type : 1});
+
+db.products.find({type : {$all : ["accessory", "case"]}})

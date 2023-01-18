@@ -1,0 +1,71 @@
+
+//Array operators
+//we are going to look at 4 operators
+//$push
+//$slice
+//$each
+//$sort
+
+//add one more to the end of the array using the $push operator
+db.Student.updateOne({_id : 1},
+    {$push : {courses : "course6"}
+    });
+
+//Adding many elements to the array
+db.Student.updateOne({_id : 1},
+    {$push : {courses :
+        {$each: ["course10", "course9", "course8"]}
+    }}
+);
+
+db.Student.updateOne({_id : 1},
+    {$push: {courses: {
+        $each : ["course7"],
+        $sort: 1 
+    }
+    }}
+);
+//using $sort : 1, means sort the data, and will do it's best to sort the data in the field
+//Will provide an issue with course10, as it will show up after course1 instead of course9
+
+//$slice with find
+db.Student.find({_id : 5},
+    {_id : 0, fName: 1, courses: {$slice : 3}}
+);
+db.Student.find({_id : 1});
+
+//Show the LAST 3 elements
+db.Student.find({_id : 1},
+    {_id : 0, fName, 1, courses: {$slice : -3}}
+);
+
+//paging, skip some and shown a number of elements
+db.Student.find({_id : 1},
+    {_id : 0, fName, 1, courses: {$slice : [3,4]}}
+);
+
+//$slice with update
+db.Student.update({_id : 1},
+    {$push: {courses: 
+        {$each : ["course11", "course12"],
+        $slice : -10}
+        }}
+);
+
+//Doing $slice : -10 drops the last 10 and keeps the first 2
+
+//This does not work as expected...
+db.Student.update({_id : 1},
+    {courses : {$slice : -9} }
+);
+//error for atomic operators
+
+//solution
+db.Student.update({_id : 1},
+    {$set : {
+    {
+        courses : {$slice : -9} 
+    }}}
+);
+//This causes major problems by replacing the entire array with $slice
+//Just to fix it, I will remove the key altogether and rerun the above commands to add them back

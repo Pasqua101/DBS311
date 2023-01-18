@@ -1,0 +1,94 @@
+var arr = [{
+    "_id": 1,
+    "Contact": {
+      "fname": "John",
+      "lname": "Doe",
+      "Phone": 9055551212
+    },
+    "balance": 1000
+  },
+  {
+    "_id": 2,
+    "Contact": {
+      "fname": "Jane",
+      "lname": "Smith",
+      "email": "jsmith@dom.com"
+    },
+    "balance": 786.45
+  },
+  {
+    "_id": 3,
+    "Contact": {
+      "fname": "Raj",
+      "lname": "Patel",
+      "email": "rpatel@ema.com"
+    }
+}];
+
+
+db.Contacts.insertMany(arr);
+
+db.Contacts.update({_id: 3},{$set : {balance: 123.75}})
+
+db.Contacts.findOne({_id: 3});
+
+db.Contacts.findOne({_id : {$gte: 2, $lte : 5}});
+
+db.Contacts.update( {_id:2},{$inc: {balance : 12.45}});
+db.Contacts.update( {_id:1},{$inc: {balance : 19.99}});
+db.Contacts.find({_id : {$lte : 2}});
+
+
+var bookArr =[
+    { "_id" : {"ISBN" : 12345678}, 
+    "Title" : "The Hobbit",
+    "Author" : "J.R.R. Tolkien"
+    },
+    { "_id" : {"ISBN" : 45678912},
+    "Title" : "DaVinci Code",
+    "Author" : "Dan Brown"
+    },
+    { "_id" : {"ISBN" : 100497213},
+    "Title" : "DBS311",
+    "Author" : "Marco Pasqua"
+    }
+];
+// db.books.insertMany([
+//  { "ISBN" : 12345678, 
+//     "Title" : "The Hobbit",
+//     "Author" : "J.R.R. Tolkien"
+//     },
+//     { "ISBN" : 45678912,
+//     "Title" : "DaVinci Code",
+//     "Author" : "Dan Brown"
+//     },
+//     { "ISBN" : 100497213,
+//     "Title" : "DBS311",
+//     "Author" : "Marco Pasqua"
+//     }]
+// );
+
+//^Incorrect method, since we can have more than 1 of the same ISBN
+
+db.books.insertMany([
+   { "_id" : {"ISBN" : 12345678}, 
+    "Title" : "The Hobbit",
+    "Author" : "J.R.R. Tolkien"
+    },
+    { "_id" : {"ISBN" : 45678912},
+    "Title" : "DaVinci Code",
+    "Author" : "Dan Brown"
+    },
+    { "_id" : {"ISBN" : 100497213},
+    "Title" : "DBS311",
+    "Author" : "Marco Pasqua"
+    }
+]);
+
+db.books.find();
+
+
+db.books.updateOne({"_id.ISBN" : 100497213}, {$set : {"CourseName" : "Advanced Database Systems"}});
+db.books.updateOne({"_id.ISBN" : 100497213}, {$unset : {"CourseName" : 1}});
+
+db.books.remove({});

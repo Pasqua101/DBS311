@@ -1,0 +1,157 @@
+//------------------------
+// DBS311 - Week 10 - Intro to MongoDB
+// Clint MacDonald
+// Nov 15, 2022
+//------------------------
+
+/*
+    MongoDB is a document based No-SQL database.
+    therefore, data is stored in collections of documents.
+    each data point in a document is stored using a key:valie pair.
+    look at recording for the note here
+
+*/
+
+//Basic commands
+
+//Show all databases in your current cluster
+show dbs;
+
+//switch or set your current database
+use DBS311_F2022_NII; //Must be done in cmd or terminal. Not realy necessary for visual studio code
+//We can now refer to current database as db
+
+//db refers to the current Databse
+//------------------
+//--- COLLECTION ---
+//------------------
+
+//show the collections(tables) in the current database
+show collections;
+
+//Drop a collection
+db.Student.drop(); 
+//Returns false because there is no collection named Student. WIll return ture if it did exists
+
+// to create a collection
+//Insert a document, which also creates the collection if it does not already exist
+// db.collectionname.insertOne({document});
+db.Student.insertOne({ //Collection name is case sensitive
+    _id : 1,
+    fName : "Marco",
+    lName : "Pasqua"
+}); //Creating a document that has 3 values or (columns)
+//^ will also create the database once an insert command is issued for the first time
+// since it will only create the database when it has to
+//Also, _id is by default the unique value (column)
+
+//Show all documents in thecollection
+// db.collectionname.find() -- note empty braces
+db.Student.find(); //Equivalent to SELECT * FROM tablenme;
+//If you do not specify the _id, an objectID will be assigned
+db.Student.insertOne({
+    fName : "Michael",
+    lName : "Carinci"
+});
+db.Student.find();
+//Can't name id field anything other than _id
+
+//to insert multiple documents at once
+//db.collectionname.insertMany([array of documents]);
+//array of documents format [{},{},{}]
+// documents are formatted: {keyname1 : value1, keyname2: value2}
+db.Student.insertMany([
+    {_id: 2, fName: "Bob", mName: "Frank", lName:"Jones"},
+    {_id: 3, fName: "Sally", lName: "Smothers", favNum: 4},
+    {_id: 4, fName: "Jennifer", lName: "Smith", favNum: 7, eyeColour: "blue"}
+    //Can create new columns, but won't place null for people who don't have it. It will just show no column with that name
+])
+
+db.Student.find();
+
+//Basic SELECTs
+//Find a specific record based on the identfier
+// db.collectionname.find({})
+//find student with _id =1
+db.Student.find({_id: 1});
+//Find student that has an object id
+
+db.Student.find({_id: ObjectId("6373cee150de18560e5a29ab")});
+//                    ^must use capital O, capital I
+
+//insert arrays
+
+db.Student.insertOne({
+    _id: 5,
+    fName: "Raj",
+    lName: "Patel",
+    courses: ["dbs311", "web322", "oop345", "syd366", "wtp100"],
+    eyeColour: "brown"
+});
+
+db.Student.find();
+
+//insert arrays of KVPs
+db.Student.insertOne({
+    _id: 6,
+    fName: "Vlad",
+    lName: "Scraba",
+    marks: [
+        {course: "dbs311", grade: 67, pf: "pass"},
+        {course: "web322", grade: 76},
+        {course: "web322", grade: 63, comment : "needs improvemnt"}
+    ],
+    eyeColour: "brown",
+    favNum: 22
+});
+
+db.Student.find({_id:6});
+
+db.Student.find({ "marks.course" : "dbs311"
+});
+
+//Can run javascript in mongodb
+function factorial(n){
+    if (n <=1){
+        return 1;
+    }
+    return n * factorial(n-1);
+};
+factorial(6);
+
+///-------------------------------
+//Lecture 2:
+
+//Delete command
+//Deleting is even mored dangerous than a relational database like Oracle SQL, you can't rollback
+//You can only back up before doing any of those changes
+
+//db.collectionname.remove();
+db.Student.remove({}); //Will remove all documents in the student collection, very dangerous
+//db.Student.removeCollection(); is another one, but it removesthe whole collection
+
+//How to delete one record based on some critera
+//db.collectionname.deleteOne({<filter criteria})
+db.Student.deleteOne({_id:1}); //If we wanted to put another filter, we could place a comma after the first field i.e, ({_id:1, name : "blah blah"})
+
+db.Student.find();
+
+//delete multiple rows based on filter criterta
+//db.collectionname.deleteMany({<filter criteria>})
+db.Student.deleteMany({lName : "Jones"});
+
+//----------------------------------------------
+//-- FIND with limiting which keys are shown ---
+//----------------------------------------------
+
+db.Student.find(); //Shows all documents and keys
+
+db.Student.find({},{fName :1, lName : 1}); //Second curly brace is the keys we want to show
+//first curly bracket is the filter critera    Second curly bracket shows the first column for fName and lName
+//Leaving first curly bracket empty returns all people in the database, _id will always be returned as well
+//To not show the _id key, we must do this
+db.Student.find({},{fName :1, lName : 1, _id:0});
+
+//To filter it to find a specifiy persona nd display specific keys
+db.Student.find({_id: 4},{fName :1, lName : 1}) ; 
+//Using 1 means show that field

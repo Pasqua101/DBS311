@@ -1,0 +1,89 @@
+//Q1. Create a database named senecaLab07 and a collection named student
+
+use senecaLab07;
+
+//Insert this information into the collection
+db.student.insertOne({
+    first_name : "Sarah",
+    last_name : "Stone",
+    email : "s_stone@email.com",
+    city : "Markham",
+    status : "full-time",
+    gpa : 3.2,
+    program : "CPA"
+});
+
+db.student.insertOne({
+    first_name : "Marco",
+    last_name : "Pasqua",
+    email : "mpasqua@myseneca.ca",
+    city : "Vaughan",
+    status : "full-time",
+    gpa : 3.1,
+    program : "CPA"
+});
+
+
+//Q2. write a command to see that the document has been made 
+db.student.find();
+
+/* How many fields are in your document? 8
+Is there any new field added to your document? Yes
+If yes, what is the name of the field? _id which has $oid (object id)*/
+
+//Q3. Remove Sarah Stone
+db.student.deleteOne({
+    first_name : "Sarah", 
+    last_name : "Stone"
+});
+
+//Q4 make sure that the document was removed, by looking only for Sarah Stone
+db.student.find(
+    {first_name : "Sarah"}, 
+    {last_name : "Stone"}
+);
+
+
+
+//Q5 Define a array named starray that holds 2 documents (2 rows of info). Then insert it and show the output from the 2 statements
+var starray = [{ //This creates a javascript object
+        _id : 1001,
+        first_name : "Sarah",
+        last_name : "Stone",
+        email : "s_stone@email.com",
+        city : "Toronto",
+        status : "full-time",
+        gpa : 3.4,
+        program : "CPA"
+    }
+    ,
+    {
+        _id : 1002,
+        first_name : "Jack",
+        last_name : "Adam",
+        email : "j_adam@email.com",
+        city : "North York",
+        status : "part-time",
+        gpa : 3.6,
+        program : "CPA"
+    
+    }];
+
+db.student.insertMany(starray);
+
+
+//Q6. Show all documents in the db
+db.student.find();
+
+//Q7. Create a statement that drops the documents
+db.student.remove({});
+
+//Q8. Drop the database
+use senecaLab07;
+
+db;
+
+db.getName();
+//^ 3 different methods to see which database you are on
+
+db.dropDatabase();

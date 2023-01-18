@@ -1,0 +1,28 @@
+db.students.find();
+
+//Q1. Write update statements to add new fields "program" and "term" 
+//to all documents in student collection, set all values to "CPA" and 1
+db.students.updateMany({}, {$set: {"program" : "CPA", "term" : 1}});
+
+//Q2. Write update statement to modify value of program field to BTTM for all doucments in the student collection
+db.students.updateMany({}, {$set :{"program" : "BTTM"}});
+
+//Q3. Write update statement to modify the value of program to CPA for student named Jonie Raby
+db.students.find({"name" : "Jonie Raby"});
+
+db.students.updateOne({"name" : "Jonie Raby"}, {$set : {"program" : "CPA"}});
+
+//Q5. Write query to show only program field for documents that has the name of Jonie Raby
+db.students.find({"name" : "Jonie Raby"}, {"_id" : 0, "program" : 1});
+
+//Q6. write update statement to increase value of term by 2 for documents with _id 20,22, and 24
+db.students.updateMany({$or : [{"_id" : 20}, 
+                        {"_id" : 22},
+                        {"_id" : 24} ]},{$set : {"term" : 3}});
+
+db.students.find({$or : [{_id : 20},
+                 {_id : 22},
+                 {_id : 24}]});
+
+//Q7. Write update statment to remove term from document swith the term value of 3
+db.students.updateMany({"term" : 3}, {$unset : {"term" : 1}});
